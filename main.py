@@ -22,6 +22,7 @@ class Message(BaseModel):
     session_id : str
     content : str
 
+# schema for session id
 class SessionID(BaseModel):
     session_id : str
 
