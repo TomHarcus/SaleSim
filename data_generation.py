@@ -30,7 +30,7 @@ with open("sales_convo_data.csv", "w", newline="") as data_file:
             in this case ***{categories[i%6]}***. The topic of the conversation is ***{random.choice(topics)}***. Choose between responding 
             confidently, nervously, angrily, or shyly. Respond naturally as in how a human would interact, not an LLM. This consists of filler 
             words and incomplete sentences. Also do not make the category too obvious, real human language is ambiguous, so vary the obviousness 
-            of your behaviour.
+            of your behaviour. Don't use unconventional words that are rarely used during natural conversation, keep it as human like as possible.
 
             Add a field to your JSON output called ***Context turns***: a list of 1-2 short prospect messages that naturally lead into the 
             salesperson's (your) response. The context turns should create a realistic setup that makes the category behaviour make sense in 
@@ -60,7 +60,7 @@ with open("sales_convo_data.csv", "w", newline="") as data_file:
             data_file.flush()
             
             print(f"completed sample {i}")
-            time.sleep(2)
+            time.sleep(4)
 
         except json.JSONDecodeError:
             print(f"json error on sample {i}")
