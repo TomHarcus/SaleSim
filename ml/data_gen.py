@@ -133,7 +133,7 @@ You may use 1 or 2 context turns, whichever creates a more natural setup. If 1 i
 use 1. Do not pad with an unnecessary second turn."""
 
 SAMPLES_PER_CATEGORY = 600
-OUTPUT_FILE = "sales_convo_data.csv"
+OUTPUT_FILE = "data/sales_convo_data.csv"
 
 def generate_data():
   # create random category order with 600 of each category
