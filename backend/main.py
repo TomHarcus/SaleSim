@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from session import Session, Customer_Type
+from backend.session import Session, Customer_Type
 import secrets
-from gemini import get_response
+from backend.gemini import get_response
 
 
 app = FastAPI()

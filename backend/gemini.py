@@ -1,6 +1,6 @@
 from google import genai
 from google.genai import types
-from session import Session
+from backend.session import Session
 import json
 from dotenv import load_dotenv
 
