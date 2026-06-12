@@ -1,11 +1,51 @@
 .start_state {
-    display: inline;
+    display: none;
 }
 
 .active_session {
-    display: none;
+    display: inline;
 }
 
 .finish_session {
     display: none;
+}
+
+.parent {
+    width: 100%;
+}
+
+.left {
+    float: left;
+    width: 20%;
+}
+
+.right {
+    float: left;
+    width: 80%;
+}
+
+.messages {
+    height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+}
+
+.message {
+    max-width: 70%;
+    padding: 8px 12px;
+    border-radius: 12px;
+}
+
+.message.prospect {
+    align-self: flex-start;
+    background-color: #e5e5e5;
+}
+
+.message.user {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
 }
