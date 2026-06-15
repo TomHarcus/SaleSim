@@ -94,11 +94,14 @@ input[type=submit] {
 .left {
     width: 65%;
     flex: 2;
+    padding: 24px;
 }
 
 .right {
     width: 35%;
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .messages {
@@ -108,12 +111,15 @@ input[type=submit] {
     flex-direction: column;
     gap: 8px;
     padding: 12px;
+    background-color: var(--panel);
+    border: var(--text-muted);
 }
 
 .message {
     max-width: 70%;
     padding: 8px 12px;
     border-radius: 12px;
+    flex: 1;
 }
 
 .message.prospect {
