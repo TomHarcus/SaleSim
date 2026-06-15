@@ -34,7 +34,7 @@ label {
 
 .start_state {
     background-color: var(--panel);
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -78,7 +78,7 @@ input[type=submit] {
 }
 
 .active_session {
-    display: none;
+    display: flex;
 }
 
 .finish_session {
@@ -87,16 +87,18 @@ input[type=submit] {
 
 .parent {
     width: 100%;
+    display: flex;
+    height: 100vh;
 }
 
 .left {
-    float: left;
-    width: 20%;
+    width: 65%;
+    flex: 2;
 }
 
 .right {
-    float: left;
-    width: 80%;
+    width: 35%;
+    flex: 1;
 }
 
 .messages {
