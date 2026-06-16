@@ -5,11 +5,11 @@
 }
 
 :root {
-    --bg: #f8fafc;
-    --panel: #ffffff;
-    --accent: #2563eb;
-    --text: #0f172a;
-    --text-muted: #64748b;
+    --bg: #0D1B2A;
+    --panel: #1B263B;
+    --accent: #415A77;
+    --text: #E0E1DD;
+    --text-muted: #778DA9;
 }
 
 body {
@@ -19,6 +19,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: "JetBrains Mono";
+    color: var(--text);
     
 }
 
@@ -50,14 +51,15 @@ input[type=text] {
     border: none;
     display: inline-block;
     border-radius: 4px;
+    color: var(--text);
 }
 
 select {
     background-color: var(--bg);
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--text-muted);
     border-radius: 6px;
     padding: 8px 12px;
-
+    color: var(--text);
 }
 
 input[type=range] {
@@ -68,7 +70,7 @@ input[type=range] {
 
 input[type=submit] {
     background-color: var(--accent);
-    color: white;
+    color: var(--text);
     border: none;
     border-radius: 6px;
     padding: 16px;
@@ -98,6 +100,7 @@ input[type=submit] {
     padding: 24px;
     display: flex;
     flex-direction: column;
+    
 }
 
 .right {
@@ -115,23 +118,39 @@ input[type=submit] {
     gap: 8px;
     padding: 12px;
     background-color: var(--panel);
-    border: var(--text-muted);
+    border: 1px solid var(--text-muted);
     flex: 1;
+    border-radius: 24px;
 }
 
 .message {
     max-width: 70%;
     padding: 8px 12px;
-    border-radius: 12px;
+    
 }
 
 .message.prospect {
     align-self: flex-start;
-    background-color: #e5e5e5;
+    background-color: var(--accent);
+    border-radius: 12px;
 }
 
 .message.user {
     align-self: flex-end;
-    background-color: #007bff;
-    color: white;
+    background-color: var(--accent);
+    border-radius: 12px;
 }
+
+.compose {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.compose input {
+    flex: 1;
+    border-radius: 24px;
+    border: 1px solid var(--text-muted);
+    background-color: var(--panel);
+}
+
