@@ -96,7 +96,7 @@ input[type=submit] {
 
 .left {
     width: 65%;
-    flex: 2;
+    flex: 3;
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -131,7 +131,7 @@ input[type=submit] {
 
 .message.prospect {
     align-self: flex-start;
-    background-color: var(--accent);
+    background-color: var(--bg);
     border-radius: 12px;
 }
 
@@ -152,5 +152,14 @@ input[type=submit] {
     border-radius: 24px;
     border: 1px solid var(--text-muted);
     background-color: var(--panel);
+}
+
+.compose button {
+    background-color: var(--accent);
+    color: var(--text);
+    border: 1px solid var(--text-muted);
+    border-radius: 24px;
+    padding: 12px 20px;
+    cursor: pointer;
 }
 
