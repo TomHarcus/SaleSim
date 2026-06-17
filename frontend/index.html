@@ -2,6 +2,7 @@
 <html lang="en-US">
     <head>
         <link href="styles/style.css" rel="stylesheet" />
+        
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
@@ -11,7 +12,7 @@
     </head>
     <body>
         <div class="start_state">
-            <form>
+            <form id="start_form">
                 <label for="description">Project Description:</label>
                 <input type="text" id="description" name="description" placeholder="Description..."><br><br>
 
@@ -88,6 +89,6 @@
             </div>
             <button id="restart_button">Start New Session</button>
         </div>
-
+        <script src="scripts/main.js"></script>
     </body>
 </html>
