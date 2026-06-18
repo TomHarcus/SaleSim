@@ -34,6 +34,12 @@ async function validateStart(event) {
 
         user_session_id = await response.json();
         console.log(user_session_id);
+        document.getElementsByClassName("start_state")[0].style.display="none";
+        document.getElementsByClassName("active_session")[0].style.display="flex";
+
+        
+
+        
 
     } catch (error) {
         console.log(error.message);
