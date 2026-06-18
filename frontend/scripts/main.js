@@ -52,6 +52,16 @@ async function validateStart(event) {
 
 }
 
+function addMessage(content, type) {
+    let new_message = document.createElement("div");
+    new_message.classList.add("message", type);
+    new_message.textContent = content;
+
+    document.getElementsByClassName("messages")[0].appendChild(new_message);
+
+}
+
+
 // two ways to send message: click send button or press enter key
 document.getElementById("send_button").addEventListener("click", sendMessage);
 
@@ -67,6 +77,8 @@ async function sendMessage(event) {
     event.preventDefault();
     let user_message = document.getElementById("user_message").value;
     console.log(user_message);
+    addMessage(user_message, "user");
+
 
     // clear message text field
     document.getElementById("user_message").value = "";
@@ -92,7 +104,10 @@ async function sendMessage(event) {
         }
 
         let customer_response = await response.json();
-        console.log(customer_response["content"]);
+        
+        addMessage(customer_response["content"], "prospect");
+        console.log(customer_response);
+        
 
     } catch (error) {
         console.log(error.message);
