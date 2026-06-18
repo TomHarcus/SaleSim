@@ -52,6 +52,21 @@ async function validateStart(event) {
 
 }
 
-async function sendMessage() {
-    return null;
+
+document.getElementById("send_button").addEventListener("click", sendMessage);
+
+let input = document.getElementById("user_message")
+input.addEventListener("keypress", function(event) {
+    if (event.key==="Enter") {
+        sendMessage(event);
+    }
+})
+async function sendMessage(event) {
+    event.preventDefault();
+    let user_message = document.getElementById("user_message").value;
+    console.log(user_message);
+
+    document.getElementById("user_message").value = "";
 }
+
+
