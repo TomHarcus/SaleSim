@@ -46,7 +46,6 @@ async def start_session(user_session: UserSession):
     # generate unique session id
     user_session_id = secrets.token_hex(16)
 
-
     user_session = Session(user_session.description, user_session.personality, user_session.customer_type, user_session.interest_level)
 
     # connect session id to user session class
