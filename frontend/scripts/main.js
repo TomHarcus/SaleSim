@@ -52,3 +52,6 @@ async function validateStart(event) {
 
 }
 
+async function sendMessage() {
+    return null;
+}
