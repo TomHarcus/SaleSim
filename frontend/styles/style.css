@@ -10,6 +10,9 @@
     --accent: #415A77;
     --text: #E0E1DD;
     --text-muted: #778DA9;
+    --dot-width: 10px;
+    --dot-color: #E0E1DD;
+    --speed: 1.5s;
 }
 
 body {
@@ -251,4 +254,40 @@ input[type=range] {
     padding: 12px 20px;
     cursor: pointer;
     width: 100%;
+}
+
+.typing {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+}
+
+.typing span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--text-muted);
+    animation: blink 1.4s infinite;
+    animation-fill-mode: both;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
 }

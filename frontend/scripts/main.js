@@ -2,6 +2,8 @@
 document.getElementById("start_form").addEventListener("submit", validateStart);
 let user_session_id = null;
 
+
+
 // start endpoint
 async function validateStart(event) {
     event.preventDefault();
@@ -12,6 +14,8 @@ async function validateStart(event) {
 
     const session_difficulty = document.getElementById("customer_type").value;
     const session_interest_level = document.getElementById("interest_level").value;
+
+  
 
     // create request object to backend
     const request = {
@@ -52,6 +56,22 @@ async function validateStart(event) {
         console.log(error.message);
     }
 
+}
+
+function addTypingIndicator() {
+    let typing_indicator = document.createElement("div");
+    typing_indicator.classList.add("typing", "message", "prospect");
+    typing_indicator.id = "typing_indicator";
+    for (let i = 0; i < 3; i++) {
+        let dot = document.createElement("span");
+        typing_indicator.appendChild(dot);
+    }
+
+    document.getElementsByClassName("messages")[0].appendChild(typing_indicator);
+}
+
+function removeTypingIndicator() {
+    document.getElementById("typing_indicator").remove();
 }
 
 function addMessage(content, type) {
@@ -101,6 +121,7 @@ async function sendMessage(event) {
     let user_message = document.getElementById("user_message").value;
     console.log(user_message);
     addMessage(user_message, "user");
+    addTypingIndicator();
 
 
     // clear message text field
@@ -127,7 +148,7 @@ async function sendMessage(event) {
         }
 
         let customer_response = await response.json();
-        
+        removeTypingIndicator();
         addMessage(customer_response["content"], "prospect");
         console.log(customer_response);
 
