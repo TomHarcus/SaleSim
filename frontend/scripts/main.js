@@ -143,8 +143,7 @@ async function sendMessage(event) {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(request)
-        })
+            body: JSON.stringify(request) })
 
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
@@ -198,6 +197,14 @@ async function endSession(event) {
 
     document.getElementsByClassName("active_session")[0].style.display="none";
     document.getElementsByClassName("finish_session")[0].style.display="flex";
+
+    old_messages = document.getElementsByClassName("messages")[0].children;
+    for (let i = 0; i < old_messages.length; i++) {
+
+        old_messages[i].classList.remove("message");
+        old_messages[i].textContent="";
+    }
+    
 
     } catch (error) {
         console.log(error.message);
