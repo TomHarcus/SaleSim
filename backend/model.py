@@ -22,8 +22,11 @@ def classify(tokens):
     
     # get prediction
     logit = outputs.logits
-    prediction = torch.argmax(logit, dim=-1)
+    predictions = torch.softmax(logit, dim=-1)
 
-    # map to correct label
-    label_map = {0: "WC", 1: "OH", 2: "FD", 3: "AN"}
-    return label_map[prediction.item()]
+
+    # convert to list of probabilities that sum to 1
+    output_values = predictions[0].tolist()
+
+
+    return {"WC": output_values[0], "OH": output_values[1], "FD": output_values[2], "AN": output_values[3]}
