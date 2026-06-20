@@ -61,10 +61,20 @@ async def get_message(user_message: Message):
     else:
         raise HTTPException(status_code=404, detail="Session not found")
     
-    classification = "N/A"
+
+    distribution = None
+    classification = ("N/A", 0)
     if user_session.get_counter() > 0:
         model_input = tokenize(user_session.get_previous_message(), user_message.content)
-        classification = classify(model_input)
+        distribution = classify(model_input)
+
+        for i in distribution:
+            distribution[i] = round(distribution[i], 2)
+
+        list_distribution = distribution.items()
+
+        classification = max(list_distribution, key=lambda x: x[1])
+
 
     response = get_response(user_session, user_message)
 
@@ -75,7 +85,7 @@ async def get_message(user_message: Message):
     user_session.update_history("model", content)
 
 
-    return {"content": content, "classification": classification, "interest_level": user_session.interest_level}
+    return {"content": content, "distribution": distribution, "classification": classification[0], "interest_level": user_session.interest_level}
 
 
 @app.post("/end")
