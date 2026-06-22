@@ -266,6 +266,16 @@ async function endSession(event) {
         old_messages[i].classList.remove("message");
         old_messages[i].textContent="";
     }
+
+    document.querySelectorAll(".progress_bar").forEach(p => p.remove());
+    document.querySelectorAll(".winning_bar").forEach(p => p.remove());
+    document.querySelectorAll(".span_distribution_label").forEach(p => p.remove());
+    let old_label = document.querySelector(".distribution_label");
+    if (old_label) {
+        old_label.remove();
+    }
+
+    document.getElementsByClassName("ood_warning")[0].style.visibility="hidden";
     
 
     } catch (error) {
