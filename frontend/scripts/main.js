@@ -2,19 +2,40 @@
 document.getElementById("start_form").addEventListener("submit", validateStart);
 let user_session_id = null;
 
+function invalidInput(current_element) {
+    current_element.classList.add("shake");
+    current_element.style.border = "1px solid " + getComputedStyle(document.documentElement).getPropertyValue("--warning").trim();
+    setTimeout(() => {
+        current_element.classList.remove("shake");
+        current_element.style.border = "none";
+    }, 300);
+}
+    
 
 // start endpoint
 async function validateStart(event) {
     event.preventDefault();
     
     // session parameters
+    const session_description_el = document.getElementById("description");
     const session_description = document.getElementById("description").value;
+
+    const session_personality_el = document.getElementById("personality");
     const session_personality = document.getElementById("personality").value;
 
     const session_difficulty = document.getElementById("customer_type").value;
     const session_interest_level = document.getElementById("interest_level").value;
 
-  
+    if (!session_description) {
+        console.log("no value");
+        invalidInput(session_description_el);
+        return;
+    }
+
+    if (!session_personality) {
+        invalidInput(session_personality_el);
+        return;
+    }
 
     // create request object to backend
     const request = {
@@ -167,7 +188,14 @@ input.addEventListener("keypress", function(event) {
 // send message 
 async function sendMessage(event) {
     event.preventDefault();
+    let user_message_el = document.getElementById("user_message");
     let user_message = document.getElementById("user_message").value;
+
+    if (!user_message) {
+        invalidInput(user_message_el);
+        return;
+    }
+
     console.log(user_message);
     addMessage(user_message, "user");
     addTypingIndicator();
