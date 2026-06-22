@@ -91,8 +91,9 @@ function addMessage(content, type) {
 
 }
 
-function updateDistribution(distribution) {
+function updateDistribution(distribution, classification) {
     document.querySelectorAll(".progress_bar").forEach(p => p.remove());
+    document.querySelectorAll(".winning_bar").forEach(p => p.remove());
     document.querySelectorAll(".span_distribution_label").forEach(p => p.remove());
     let old_label = document.querySelector(".distribution_label");
     if (old_label) {
@@ -106,7 +107,12 @@ function updateDistribution(distribution) {
     document.getElementsByClassName("information")[0].insertBefore(current_distribution, document.querySelector(".info-label"));
     for (const key in distribution) {
         let bar = document.createElement("div");
-        bar.classList.add("progress_bar");
+        if (key === classification) {
+            bar.classList.add("winning_bar");
+        } else {
+            bar.classList.add("progress_bar");
+        }
+        
         let width = 0;
         let frame = () => {
             if (width >= distribution[key]*100) {
@@ -117,13 +123,15 @@ function updateDistribution(distribution) {
         }
         }
 
+        let id = setInterval(frame, 5);
+
         if (distribution[key] === 0) {
             bar.style.width = "0%";
         }
         let label = document.createElement("span");
         label.classList.add("span_distribution_label");
-        label.textContent = `${key}: ${(distribution[key]*100)}%`;
-        let id = setInterval(frame, 5);
+        label.textContent = `${key}: ${(Math.round(distribution[key]*100))}%`;
+        
         document.getElementsByClassName("information")[0].insertBefore(label, document.querySelector(".info-label"));
         document.getElementsByClassName("information")[0].insertBefore(bar, document.querySelector(".info-label"));    
     }
@@ -205,7 +213,7 @@ async function sendMessage(event) {
 
         if (customer_response["classification"] !== "N/A") {
 
-            updateDistribution(customer_response["distribution"]);
+            updateDistribution(customer_response["distribution"], customer_response["classification"]);
         }
 
         updateInterestLevel(customer_response["interest_level"]);

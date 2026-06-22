@@ -221,7 +221,14 @@ input[type=range] {
 
 .progress_bar {
     height: 20px;
-    background-color: var(--accent);
+    background-color: var(--text-muted);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.winning_bar {
+    height: 20px;
+    background-color: var(--text);
     border-radius: 4px;
     display: inline-block;
 }
