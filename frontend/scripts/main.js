@@ -58,6 +58,14 @@ async function validateStart(event) {
 
 }
 
+const classification_map = {
+    "OH": "Objection handling",
+    "AN": "Anchoring",
+    "FD": "Feature dumping",
+    "WC": "Weak concession",
+    "N/A": "N/A"
+};
+
 function addTypingIndicator() {
     let typing_indicator = document.createElement("div");
     typing_indicator.classList.add("typing", "message", "prospect");
@@ -81,6 +89,23 @@ function addMessage(content, type) {
 
     document.getElementsByClassName("messages")[0].appendChild(new_message);
 
+}
+
+function updateDistribution(distribution) {
+    console.log(distribution);
+    let current_distribution = document.createElement("div");
+    current_distribution.classList.add("distribution_label")
+    current_distribution.textContent = "Class Distribution";
+    
+    document.getElementsByClassName("information")[0].insertBefore(current_distribution, document.querySelector(".info-label"));
+    for (const key in distribution) {
+        let current_class = document.createElement("p");
+        current_class.classList.add("distribution_value");
+        current_class.textContent = `${key}: ${distribution[key]*100}%`;
+        document.getElementsByClassName("information")[0].insertBefore(current_class, document.querySelector(".info-label"));
+    }
+
+    
 }
 
 function updateInterestLevel(current_interest_level) {
@@ -107,13 +132,7 @@ input.addEventListener("keypress", function(event) {
     }
 })
 
-const classification_map = {
-    "OH": "Objection handling",
-    "AN": "Anchoring",
-    "FD": "Feature dumping",
-    "WC": "Weak concession",
-    "N/A": "N/A"
-};
+
 
 // send message 
 async function sendMessage(event) {
@@ -162,6 +181,10 @@ async function sendMessage(event) {
         let classification = document.getElementsByClassName("info-value");
 
         classification[0].textContent = classification_map[customer_response["classification"]];
+
+        if (customer_response["classification"] !== "N/A") {
+            updateDistribution(customer_response["distribution"]);
+        }
 
         updateInterestLevel(customer_response["interest_level"]);
         
