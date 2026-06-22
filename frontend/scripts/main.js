@@ -3,7 +3,6 @@ document.getElementById("start_form").addEventListener("submit", validateStart);
 let user_session_id = null;
 
 
-
 // start endpoint
 async function validateStart(event) {
     event.preventDefault();
@@ -180,6 +179,10 @@ async function sendMessage(event) {
     document.getElementById("user_message").disabled = true;
     document.getElementById("send_button").disabled = true;
 
+    let input_box = document.getElementById("user_message");
+    input_box.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue("--warning").trim();
+    
+
     document.getElementsByClassName("ood_warning")[0].style.visibility="hidden";
 
 
@@ -209,6 +212,7 @@ async function sendMessage(event) {
 
         document.getElementById("user_message").disabled = false;
         document.getElementById("send_button").disabled = false;
+        document.getElementById("user_message").style.removeProperty("border-color");
 
         document.getElementsByClassName("messages")[0].scrollTop = document.getElementsByClassName("messages")[0].scrollHeight;
 
