@@ -35,6 +35,9 @@ class Session:
 
     def get_previous_message(self):
         return self.history[-1].parts[0].text
+    
+    def update_objections(self, objection):
+        self.objections.append(objection)
 
 
         

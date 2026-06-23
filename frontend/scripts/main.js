@@ -208,7 +208,7 @@ async function sendMessage(event) {
     document.getElementById("send_button").disabled = true;
 
     let input_box = document.getElementById("user_message");
-    input_box.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue("--warning").trim();
+    input_box.style.border = "1px solid " + getComputedStyle(document.documentElement).getPropertyValue("--warning").trim();
     
 
     document.getElementsByClassName("ood_warning")[0].style.visibility="hidden";

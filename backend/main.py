@@ -61,7 +61,7 @@ async def get_message(user_message: Message):
     else:
         raise HTTPException(status_code=404, detail="Session not found")
     
-    threshold = 0.6
+    threshold = 0.65
     low_confidence = False
     distribution = None
     classification = ("N/A", 0)
@@ -88,6 +88,7 @@ async def get_message(user_message: Message):
     user_session.update_history("user", user_message.content)
     content = response["content"]
     user_session.update_history("model", content)
+    user_session.update_objections(response["objection"])
 
 
     return {"content": content, "distribution": distribution, "classification": classification[0], "low_confidence": low_confidence, "interest_level": user_session.interest_level}
