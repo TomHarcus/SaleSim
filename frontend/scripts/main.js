@@ -88,6 +88,16 @@ const classification_map = {
     "N/A": "N/A"
 };
 
+const objection_map = {
+    "price": "Price / budget",
+    "timing": "Bad timing",
+    "incumbent_vendor": "Has existing vendor",
+    "no_need": "No need is perceived",
+    "no_authority": "Not decision maker",
+    "trust": "Lack of trust",
+    "null": "No current objection",
+}
+
 function addTypingIndicator() {
     let typing_indicator = document.createElement("div");
     typing_indicator.classList.add("typing", "message", "prospect");
@@ -256,6 +266,9 @@ async function sendMessage(event) {
         if (customer_response["low_confidence"] === true) {
             document.getElementsByClassName("ood_warning")[0].style.visibility="visible";
         }
+
+        let current_objection = document.getElementsByClassName("current_objection");
+        current_objection[0].textContent = objection_map[customer_response["objection"]];
 
         updateInterestLevel(customer_response["interest_level"]);
         

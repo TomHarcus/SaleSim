@@ -91,7 +91,7 @@ async def get_message(user_message: Message):
     user_session.update_objections(response["objection"])
 
 
-    return {"content": content, "distribution": distribution, "classification": classification[0], "low_confidence": low_confidence, "interest_level": user_session.interest_level}
+    return {"content": content, "distribution": distribution, "classification": classification[0], "low_confidence": low_confidence, "objection": response["objection"], "interest_level": user_session.interest_level}
 
 
 @app.post("/end")
