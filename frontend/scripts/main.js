@@ -313,10 +313,6 @@ function populateLeft(description, personality, difficulty, turns, final_interes
 
 }
 
-function populateRight() {
-
-}
-
 function classificationBreakdown(history, turns) {
     const filtered = history.filter(h => h !== "N/A");
 
@@ -343,6 +339,14 @@ function classificationBreakdown(history, turns) {
     class_counts_title.classList.add("finish_label");
     class_counts_title.textContent = "Class counts";
     document.getElementsByClassName("finish_right")[0].appendChild(class_counts_title);
+
+    if (maxValue === 0) {
+        let class_warning = document.createElement("p");
+        class_warning.classList.add("finish_text");
+        class_warning.textContent = "No classifications detected";
+        document.getElementsByClassName("finish_right")[0].appendChild(class_warning);
+        return;
+    }
 
     for (const key in class_counts) {
         let bar = document.createElement("div");
@@ -380,6 +384,40 @@ function classificationBreakdown(history, turns) {
     }
 }
 
+function interestLineGraph(interest_trajectory) {
+    let title = document.createElement("p");
+    title.classList.add("finish_label");
+    title.textContent = "Interest over time";
+    document.getElementsByClassName("finish_right")[0].appendChild(title);
+
+    points = [];
+
+    for (let i = 0; i < interest_trajectory.length; i++) {
+        points.push([i, interest_trajectory[i]]);
+    }
+    
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+
+    const container = document.getElementsByClassName("finish_right")[0];
+    const svgWidth = container.clientWidth;
+    const svgHeight = container.clientHeight/2;
+
+    const xScale = i => (i / (interest_trajectory.length - 1)) * svgWidth;
+    const yScale = v => svgHeight - ((v-1)/4) * svgHeight;
+
+    const pointsString = points.map(([i,v]) => `${xScale(i)}, ${yScale(v)}`).join(" ");
+
+    polyline.setAttribute("points", pointsString);
+    polyline.setAttribute("fill", "none");
+    polyline.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--text").trim());
+    polyline.setAttribute("stroke-width", "3");
+
+    svg.setAttribute("viewbox", `0 0 ${svgWidth} ${svgHeight}`);
+    svg.appendChild(polyline);
+    document.getElementsByClassName("finish_right")[0].appendChild(svg);
+}
+
 
 document.getElementById("end_session").addEventListener("click", endSession);
 
@@ -410,7 +448,7 @@ async function endSession(event) {
 
     populateLeft(backend_response["description"], backend_response["personality"], backend_response["difficulty"], backend_response["total_turns"], backend_response["final_interest_level"], backend_response["most_frequent_class"],backend_response["low_confidence_count"]);
     classificationBreakdown(backend_response["classification_history"], backend_response["total_turns"]);
-    populateRight();
+    interestLineGraph(backend_response["interest_trajectory"]);
 
     old_messages = document.getElementsByClassName("messages")[0].children;
     for (let i = 0; i < old_messages.length; i++) {
