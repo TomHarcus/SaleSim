@@ -317,6 +317,70 @@ function populateRight() {
 
 }
 
+function classificationBreakdown(history, turns) {
+    const filtered = history.filter(h => h !== "N/A");
+
+    let class_counts = {
+        "WC": 0,
+        "OH": 0,
+        "FD": 0,
+        "AN": 0
+    };
+
+    for (let i = 0; i < filtered.length; i++) {
+        class_counts[filtered[i]]++;
+    }
+
+    let maxKey, maxValue = 0;
+    for (const key in class_counts) {
+        if (class_counts[key] > maxValue) {
+            maxKey = key;
+            maxValue = class_counts[key];
+        }
+    }
+
+    let class_counts_title = document.createElement("p");
+    class_counts_title.classList.add("finish_label");
+    class_counts_title.textContent = "Class counts";
+    document.getElementsByClassName("finish_right")[0].appendChild(class_counts_title);
+
+    for (const key in class_counts) {
+        let bar = document.createElement("div");
+
+        if (key === maxKey) {
+            bar.classList.add("winning_score_bar");
+        } else {
+            bar.classList.add("score_bar");
+        }
+        
+
+        let width = 0;
+        let frame = () => {
+            if (width >= class_counts[key]/filtered.length*100) {
+                clearInterval(id);
+            } else {
+                
+                width++;
+                bar.style.width = width + "%";
+            }
+        }
+
+        let id = setInterval(frame, 5);
+
+        if (class_counts[key] == 0) {
+            bar.style.width = "0%";
+        }
+
+        let label = document.createElement("p");
+        label.classList.add("finish_text");
+        label.textContent = `${key}: ${class_counts[key]}`;
+        
+        document.getElementsByClassName("finish_right")[0].appendChild(label);
+        document.getElementsByClassName("finish_right")[0].appendChild(bar);
+    }
+}
+
+
 document.getElementById("end_session").addEventListener("click", endSession);
 
 async function endSession(event) {
@@ -345,6 +409,7 @@ async function endSession(event) {
 
 
     populateLeft(backend_response["description"], backend_response["personality"], backend_response["difficulty"], backend_response["total_turns"], backend_response["final_interest_level"], backend_response["most_frequent_class"],backend_response["low_confidence_count"]);
+    classificationBreakdown(backend_response["classification_history"], backend_response["total_turns"]);
     populateRight();
 
     old_messages = document.getElementsByClassName("messages")[0].children;
