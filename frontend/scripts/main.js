@@ -7,7 +7,11 @@ function invalidInput(current_element) {
     current_element.style.border = "1px solid " + getComputedStyle(document.documentElement).getPropertyValue("--warning").trim();
     setTimeout(() => {
         current_element.classList.remove("shake");
-        current_element.style.border = "none";
+        if (current_element.isEqualNode(document.getElementById("user_message"))) {
+            current_element.style.border = "1px solid " + getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim();
+        } else {
+            current_element.style.border = "none";
+        }
     }, 300);
 }
     
@@ -250,7 +254,8 @@ async function sendMessage(event) {
 
         document.getElementById("user_message").disabled = false;
         document.getElementById("send_button").disabled = false;
-        document.getElementById("user_message").style.removeProperty("border-color");
+        //document.getElementById("user_message").style.removeProperty("border-color");
+        document.getElementById("user_message").style.border = "1px solid " + getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim();
 
         document.getElementsByClassName("messages")[0].scrollTop = document.getElementsByClassName("messages")[0].scrollHeight;
 
