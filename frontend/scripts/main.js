@@ -263,7 +263,7 @@ async function sendMessage(event) {
     addTypingIndicator();
 
     // save message before clearing
-    sending_user_message = user_message.value;
+    let sending_user_message = user_message.value;
 
     // clear message text field
     user_message.value = "";
@@ -328,7 +328,7 @@ async function sendMessage(event) {
             user_message.value = "";
 
             user_message.disabled = true;
-            document.getElementById("send_button").disabled = true;
+            send_button.disabled = true;
 
             user_message.style.border = "1px solid " + warning_colour;
         } 
@@ -489,18 +489,20 @@ function interestLineGraph(interest_trajectory) {
     let title = document.createElement("p");
     title.classList.add("finish_label");
     title.textContent = "Interest over time";
-    document.getElementsByClassName("finish_right")[0].appendChild(title);
+    finish_right.appendChild(title);
 
     let points = [];
-
+    // add interest points to array
     for (let i = 0; i < interest_trajectory.length; i++) {
         points.push([i, interest_trajectory[i]]);
     }
     
+    // create svg object
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
 
-    const container = document.getElementsByClassName("finish_right")[0];
+    // set dimensions
+    const container = finish_right;
     const svgWidth = container.clientWidth;
     const svgHeight = container.clientHeight/2;
 
@@ -509,12 +511,14 @@ function interestLineGraph(interest_trajectory) {
     const paddingTop = 30;
     const paddingRight = 50;
     
-
+    // set line graph scale
     const xScale = i => (i / (interest_trajectory.length - 1)) * svgWidth;
     const yScale = v => svgHeight - (v/5) * svgHeight;
 
+    // scale points in array
     const pointsString = points.map(([i,v]) => `${xScale(i)}, ${yScale(v)}`).join(" ");
 
+    // line graph features
     const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
     yAxis.setAttribute("x1", 0);
     yAxis.setAttribute("y1", 0);
@@ -548,8 +552,6 @@ function interestLineGraph(interest_trajectory) {
         svg.appendChild(circle);
     }
 
-    
-
     const yLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
     yLabel.setAttribute("transform", "rotate(-90)");
     yLabel.setAttribute("x", -svgHeight/2-24);
@@ -558,8 +560,6 @@ function interestLineGraph(interest_trajectory) {
     yLabel.setAttribute("font-size", "12");
     yLabel.textContent = "Interest";
 
-    
-
     const xLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
     xLabel.setAttribute("x", svgWidth/2-44);
     xLabel.setAttribute("y", svgHeight+16);
@@ -567,7 +567,6 @@ function interestLineGraph(interest_trajectory) {
     xLabel.setAttribute("font-size", "12");
     xLabel.textContent = "Turns";
     
-
     svg.setAttribute("viewBox", `${-paddingLeft} ${-paddingTop} ${svgWidth+paddingRight} ${svgHeight+paddingBottom}`);
     
 
@@ -575,12 +574,13 @@ function interestLineGraph(interest_trajectory) {
     svg.appendChild(yLabel);
     svg.appendChild(xLabel);
 
-    document.getElementsByClassName("finish_right")[0].appendChild(svg);
+    finish_right.appendChild(svg);
 }
 
 
 document.getElementById("end_session").addEventListener("click", endSession);
 
+// end conversation
 async function endSession(event) {
     event.preventDefault();
 
@@ -602,10 +602,11 @@ async function endSession(event) {
     let backend_response = await response.json();
     console.log(backend_response);
 
+    // switch to summary screen
     document.getElementsByClassName("active_session")[0].style.display="none";
     document.getElementsByClassName("finish_session")[0].style.display="flex";
 
-
+    // fill screen with session information
     populateLeft(backend_response["description"], backend_response["personality"], backend_response["difficulty"], backend_response["total_turns"], backend_response["final_interest_level"], backend_response["most_frequent_class"],backend_response["low_confidence_count"]);
     classificationBreakdown(backend_response["classification_history"], backend_response["total_turns"]);
     interestLineGraph(backend_response["interest_trajectory"]);
@@ -617,6 +618,7 @@ async function endSession(event) {
     console.log("session ended");
 }
 
+// reset all data to default
 function resetContent() {
     document.getElementsByClassName("messages")[0].innerHTML = "";
 
@@ -641,16 +643,15 @@ function resetContent() {
         warning.remove();
     }
 
-    document.getElementById("user_message").value = "";
+    user_message.value = "";
 
-    document.getElementById("user_message").disabled = false;
-    document.getElementById("send_button").disabled = false;
+    user_message.disabled = false;
+    send_button.disabled = false;
 
-    let input_box = document.getElementById("user_message");
-    input_box.style.border = "1px solid " + text_muted;
+    user_message.style.border = "1px solid " + text_muted;
     
     document.getElementsByClassName("finish_left")[0].innerHTML = "";
-    document.getElementsByClassName("finish_right")[0].innerHTML = "";
+    finish_right.innerHTML = "";
 
     let session_description = document.getElementById("description");
     session_description.value = "";
@@ -661,9 +662,13 @@ function resetContent() {
 
 document.getElementById("restart_button").addEventListener("click", startNewSession);
 
+// start again
 function startNewSession(event) {
+    // switch back to set parameter screen
     document.getElementsByClassName("finish_session")[0].style.display="none";
     document.getElementsByClassName("start_state")[0].style.display="flex";
+
+    // reset session id and if user lost
     user_session_id = null;
     user_lost = false;
 
