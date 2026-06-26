@@ -9,6 +9,27 @@ document.getElementById("start_form").addEventListener("submit", validateStart);
 let user_session_id = null;
 let user_lost = false;
 
+const user_message = document.getElementById("user_message");
+const send_button = document.getElementById("send_button");
+
+const classification_map = {
+    "OH": "Objection handling",
+    "AN": "Anchoring",
+    "FD": "Feature dumping",
+    "WC": "Weak concession",
+    "N/A": "N/A"
+};
+
+const objection_map = {
+    "price": "Price / budget",
+    "timing": "Bad timing",
+    "incumbent_vendor": "Has existing vendor",
+    "no_need": "Customer doesn't have a need",
+    "no_authority": "Not decision maker",
+    "trust": "Lack of trust",
+    "null": "No current objection",
+}
+
 // check for invalid input in the input fields => shake + warning colour for clarity
 function invalidInput(current_element) {
     current_element.classList.add("shake");
@@ -92,27 +113,13 @@ async function validateStart(event) {
 
 }
 
-const classification_map = {
-    "OH": "Objection handling",
-    "AN": "Anchoring",
-    "FD": "Feature dumping",
-    "WC": "Weak concession",
-    "N/A": "N/A"
-};
 
-const objection_map = {
-    "price": "Price / budget",
-    "timing": "Bad timing",
-    "incumbent_vendor": "Has existing vendor",
-    "no_need": "Customer doesn't have a need",
-    "no_authority": "Not decision maker",
-    "trust": "Lack of trust",
-    "null": "No current objection",
-}
 
 function addTypingIndicator() {
+    // create typing indicator while waiting for llm response
     let typing_indicator = document.createElement("div");
     typing_indicator.classList.add("typing", "message", "prospect");
+    // css animation
     typing_indicator.id = "typing_indicator";
     for (let i = 0; i < 3; i++) {
         let dot = document.createElement("span");
@@ -122,10 +129,12 @@ function addTypingIndicator() {
     document.getElementsByClassName("messages")[0].appendChild(typing_indicator);
 }
 
+// remove typing indicator animation
 function removeTypingIndicator() {
     document.getElementById("typing_indicator").remove();
 }
 
+// add message to conversation box
 function addMessage(content, type) {
     let new_message = document.createElement("div");
     new_message.classList.add("message", type);
@@ -135,7 +144,9 @@ function addMessage(content, type) {
 
 }
 
+// create distribution bars 
 function updateDistribution(distribution, classification) {
+    // remove previous turn distribution
     document.querySelectorAll(".progress_bar").forEach(p => p.remove());
     document.querySelectorAll(".winning_bar").forEach(p => p.remove());
     document.querySelectorAll(".span_distribution_label").forEach(p => p.remove());
@@ -144,6 +155,7 @@ function updateDistribution(distribution, classification) {
         old_label.remove();
     }
 
+    // create current distribution
     let current_distribution = document.createElement("div");
     current_distribution.classList.add("distribution_label")
     current_distribution.textContent = "Class Distribution";
@@ -151,12 +163,14 @@ function updateDistribution(distribution, classification) {
     document.getElementsByClassName("information")[0].insertBefore(current_distribution, document.querySelector(".info-label"));
     for (const key in distribution) {
         let bar = document.createElement("div");
+        // winning bar is green for user clarity
         if (key === classification) {
             bar.classList.add("winning_bar");
         } else {
             bar.classList.add("progress_bar");
         }
         
+        // css bar animation
         let width = 0;
         let frame = () => {
             if (width >= distribution[key]*100) {
@@ -181,9 +195,11 @@ function updateDistribution(distribution, classification) {
     }
 }
 
+// interest level dot update
 function updateInterestLevel(current_interest_level) {
     let interest_level = document.getElementsByClassName("interest-dots")[0].children;
 
+    // turn all dots warning colour if user loses
     if (current_interest_level === 0) {
         for (let i = 0; i < interest_level.length; i++) {
             interest_level[i].classList.remove("active");
@@ -191,6 +207,7 @@ function updateInterestLevel(current_interest_level) {
         }
     }
 
+    // update interest dots if user doesn't lose
     for (let i = 0; i < interest_level.length; i++) {
         if (i < current_interest_level) {
             interest_level[i].classList.add("active");
@@ -212,6 +229,7 @@ input.addEventListener("keypress", function(event) {
     }
 })
 
+// forward slash focuses on typing box so no need to constantly click it
 document.addEventListener('keydown', (e) => {
     if (e.key === "/" && document.activeElement !== input) {
         e.preventDefault();
@@ -225,40 +243,39 @@ document.addEventListener('keydown', (e) => {
 async function sendMessage(event) {
     event.preventDefault();
 
+    // check if user has lost
     if (user_lost) {
         return;
     }
 
-    let user_message_el = document.getElementById("user_message");
-    let user_message = document.getElementById("user_message").value;
-  
-
-    if (!user_message.trim()) {
-        invalidInput(user_message_el);
+    // invalid message: empty string or just spaces
+    if (!user_message.value.trim()) {
+        invalidInput(user_message);
         return;
     }
 
-    console.log(user_message);
-    addMessage(user_message, "user");
+    console.log(user_message.value);
+
+    // add message to conversation box
+    addMessage(user_message.value, "user");
     addTypingIndicator();
 
+    // save message before clearing
+    sending_user_message = user_message.value;
 
     // clear message text field
-    document.getElementById("user_message").value = "";
-
-    document.getElementById("user_message").disabled = true;
-    document.getElementById("send_button").disabled = true;
-
-    let input_box = document.getElementById("user_message");
-    input_box.style.border = "1px solid " + warning_colour;
+    user_message.value = "";
     
+    // disable input so that mutliple messages cant be sent at once
+    user_message.disabled = true;
+    send_button.disabled = true;
 
-  
-
+    user_message.style.border = "1px solid " + warning_colour;
+    
 
     const request = {
         session_id: user_session_id,
-        content: user_message
+        content: sending_user_message
     };
 
     const url = "http://127.0.0.1:8000/message";
@@ -270,27 +287,35 @@ async function sendMessage(event) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(request) })
+        
 
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
 
+        // add llm responst to conversation box
         let customer_response = await response.json();
         removeTypingIndicator();
         addMessage(customer_response["content"], "prospect");
         console.log(customer_response);
 
-        document.getElementById("user_message").disabled = false;
-        document.getElementById("send_button").disabled = false;
+        
+        // re-enable message box
+        user_message.disabled = false;
+        send_button.disabled = false;
 
-        document.getElementById("user_message").style.border = "1px solid " + text_muted;
+        user_message.style.border = "1px solid " + text_muted;
 
+        // conversation box automatically goes to latest message
         document.getElementsByClassName("messages")[0].scrollTop = document.getElementsByClassName("messages")[0].scrollHeight;
 
-        try {
-            document.getElementsByClassName("warning")[0].remove();
-        } catch {}
+        // remove warning border if applicable
+        const warning = document.querySelector(".warning");
+        if (warning) {
+            warning.remove();
+        }
 
+        // check if customer hangs up
         if (customer_response["interest_level"] === 0) {
             user_lost = true;
             let lost_warning = document.createElement("div");
@@ -298,24 +323,25 @@ async function sendMessage(event) {
             lost_warning.textContent = "Customer has hung up: You lose";
             document.getElementsByClassName("information")[0].insertBefore(lost_warning, document.querySelector(".objection-label"));
 
-            document.getElementById("user_message").value = "";
+            user_message.value = "";
 
-            document.getElementById("user_message").disabled = true;
+            user_message.disabled = true;
             document.getElementById("send_button").disabled = true;
 
-            let input_box = document.getElementById("user_message");
-            input_box.style.border = "1px solid " + warning_colour;
+            user_message.style.border = "1px solid " + warning_colour;
         } 
 
+        // set classification in information box
         let classification = document.getElementsByClassName("info-value");
 
         classification[0].textContent = classification_map[customer_response["classification"]];
 
+        // no distribution if classification is n/a obviously
         if (customer_response["classification"] !== "N/A") {
-
             updateDistribution(customer_response["distribution"], customer_response["classification"]);
         }
 
+        // check if classification is divided and unsure
         if (customer_response["low_confidence"] === true && user_lost !== true) {
             let ood_warning = document.createElement("div");
             ood_warning.classList.add("warning");
@@ -323,6 +349,7 @@ async function sendMessage(event) {
             document.getElementsByClassName("information")[0].insertBefore(ood_warning, document.querySelector(".objection-label"));
         }
 
+        // check if message is of appropriate length for model
         if (customer_response["length_valid"] === false && user_lost !== true) {
             let length_warning = document.createElement("div");
             length_warning.classList.add("warning");
@@ -330,14 +357,13 @@ async function sendMessage(event) {
             document.getElementsByClassName("information")[0].insertBefore(length_warning, document.querySelector(".objection-label"));
         }
 
+        // set current objection
         let current_objection = document.getElementsByClassName("current_objection");
         current_objection[0].textContent = objection_map[customer_response["objection"]];
 
-        
-        
         updateInterestLevel(customer_response["interest_level"]);
         
-
+        // set turn number
         let number_turns = document.getElementsByClassName("number_turns");
         number_turns[0].textContent = customer_response["turn_number"];
         
@@ -345,8 +371,8 @@ async function sendMessage(event) {
 
     } catch (error) {
         console.log(error.message);
-        document.getElementById("user_message").disabled = false;
-        document.getElementById("send_button").disabled = false;
+        user_message.disabled = false;
+        send_button.disabled = false;
     }
 
 }
