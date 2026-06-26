@@ -12,6 +12,8 @@ let user_lost = false;
 const user_message = document.getElementById("user_message");
 const send_button = document.getElementById("send_button");
 
+const finish_right = document.getElementsByClassName("finish_right")[0];
+
 const classification_map = {
     "OH": "Objection handling",
     "AN": "Anchoring",
@@ -377,7 +379,7 @@ async function sendMessage(event) {
 
 }
 
-
+// add information on left hand side of panel
 function populateLeft(description, personality, difficulty, turns, final_interest, most_frequent_class, low_confidence) {
 
     const fields = [
@@ -392,6 +394,7 @@ function populateLeft(description, personality, difficulty, turns, final_interes
 
     const container = document.getElementsByClassName("finish_left")[0];
 
+    // loop to add each once
     fields.forEach(([label, value]) => {
         let l = document.createElement("p");
         let v = document.createElement("p");
@@ -405,7 +408,9 @@ function populateLeft(description, personality, difficulty, turns, final_interes
 
 }
 
+// bar chart for number of classifications
 function classificationBreakdown(history, turns) {
+    // remove n/a class
     const filtered = history.filter(h => h !== "N/A");
 
     let class_counts = {
@@ -419,6 +424,7 @@ function classificationBreakdown(history, turns) {
         class_counts[filtered[i]]++;
     }
 
+    // find max classification for green bar
     let maxKey, maxValue = 0;
     for (const key in class_counts) {
         if (class_counts[key] > maxValue) {
@@ -430,16 +436,18 @@ function classificationBreakdown(history, turns) {
     let class_counts_title = document.createElement("p");
     class_counts_title.classList.add("finish_label");
     class_counts_title.textContent = "Class counts";
-    document.getElementsByClassName("finish_right")[0].appendChild(class_counts_title);
+    finish_right.appendChild(class_counts_title);
 
+    // no classifications
     if (maxValue === 0) {
         let class_warning = document.createElement("p");
         class_warning.classList.add("finish_text");
         class_warning.textContent = "No classifications detected";
-        document.getElementsByClassName("finish_right")[0].appendChild(class_warning);
+        finish_right.appendChild(class_warning);
         return;
     }
 
+    // bar chart loop
     for (const key in class_counts) {
         let bar = document.createElement("div");
 
@@ -449,7 +457,7 @@ function classificationBreakdown(history, turns) {
             bar.classList.add("score_bar");
         }
         
-
+        // bar css animation
         let width = 0;
         let frame = () => {
             if (width >= class_counts[key]/filtered.length*100) {
@@ -471,11 +479,12 @@ function classificationBreakdown(history, turns) {
         label.classList.add("finish_text");
         label.textContent = `${key}: ${class_counts[key]}`;
         
-        document.getElementsByClassName("finish_right")[0].appendChild(label);
-        document.getElementsByClassName("finish_right")[0].appendChild(bar);
+        finish_right.appendChild(label);
+        finish_right.appendChild(bar);
     }
 }
 
+// line graph of interest level
 function interestLineGraph(interest_trajectory) {
     let title = document.createElement("p");
     title.classList.add("finish_label");
