@@ -41,7 +41,7 @@ Anchoring (AN) - The salesperson sets a price for the service/product early in t
 
 ### Data Generation
 
-Google Gemini created 2400 synthetic samples of conversation pairs with each sample given one classification type making sure that the four classes were balanced in the final dataset.  
+Google Gemini created 2400 synthetic samples of conversation pairs with each sample given one classification type making sure that the four classes were balanced in the final dataset. The labels were deliberately left out of the output.
 
 ### Circularity Problem 
 
@@ -51,6 +51,9 @@ To fix this Gemini was given explicit positive and negative examples for each ca
 
 ### Manual Labelling Decision
 
+Gemini generated all 2400 conversation pairs but deliberately left out classification labels so that I could manually label all of them.
+
+This was done as relying on Gemini to label its own samples would re-introduce the circularity problem. Its label would reflect its own generation intent instead of a consistent human-defined standard.
 
 
 ### Training and Evaluation
